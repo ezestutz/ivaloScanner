@@ -1,115 +1,91 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * Generated with the TypeScript template
- * https://github.com/react-native-community/react-native-template-typescript
- *
- * @format
- */
-
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
+  Keyboard,
   Text,
-  useColorScheme,
   View,
+  TextInput,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  SafeAreaView,
+  TouchableOpacity,
+  ActivityIndicator,
+  Modal,
+  ToastAndroid,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import axios from 'axios';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+export default function App() {
+  const [loadingLogin, setLoadingLogin] = useState(true);
+  const [loadingScan, setLoadingScan] = useState(false);
+  const [token, setToken] = useState('');
+  const [usuario, setUsername] = useState('');
+  const [contraseña, setPassword] = useState('');
 
-const Section: React.FC<{
-  title: string;
-}> = ({children, title}) => {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-};
+  useEffect(() => {
+    async function getSetToken() {
+      AsyncStorage.getItem('TOKEN', (error, result) => {
+        if (!error && result) setToken(result);
+        setLoadingLogin(false);
+      });
+    }
+    if (!token) getSetToken();
+  }, [token]);
 
-const App = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const onLoginPress = async () => {
+    setLoadingLogin(true);
+    Keyboard.dismiss();
+    const {data} = await axios.post('http://177.71.157.129:4100/client_auth', {
+      usuario,
+      contraseña,
+    });
+    const {Errors, Token} = data;
+    if (Errors.length > 0) {
+      ToastAndroid.show(Errors.join('. '), ToastAndroid.LONG);
+    } else {
+      AsyncStorage.setItem('TOKEN', Token, () => {
+        setToken(Token);
+        setLoadingLogin(false);
+      });
+    }
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <SafeAreaView>
+      {(loadingLogin || loadingScan) && (
+        <Modal style={{flex: 1}}>
+          <ActivityIndicator color="#000000" />
+        </Modal>
+      )}
+      {!token ? (
+        <KeyboardAvoidingView behavior="padding">
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View>
+              <TextInput
+                placeholder="Username"
+                onChangeText={text => setUsername(text)}
+              />
+              <TextInput
+                placeholder="Password"
+                secureTextEntry={true}
+                onChangeText={text => setPassword(text)}
+              />
+              <TouchableOpacity onPress={() => onLoginPress()}>
+                <Text>Ingresar</Text>
+                <FontAwesomeIcon icon="sign-in" />
+              </TouchableOpacity>
+            </View>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+      ) : (
+        <View style={{flex: 1, justifyContent: 'center', marginBottom: 15}}>
+          <TouchableOpacity>
+            <Text>Escanear</Text>
+            <FontAwesomeIcon icon="barcode" />
+          </TouchableOpacity>
         </View>
-      </ScrollView>
+      )}
     </SafeAreaView>
   );
-};
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
+}
