@@ -10,7 +10,7 @@ export default function Footer() {
   return (
     <View style={styles.footer}>
       <FontAwesomeIcon color="#555555" icon={faCopyright} />
-      <Text style={styles.footerText}> ivalo - {today.getFullYear()}</Text>
+      <Text style={styles.footerText}> ivalo software</Text>
     </View>
   );
 }

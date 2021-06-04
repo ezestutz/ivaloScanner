@@ -15,8 +15,7 @@ import {
   faSignInAlt,
   faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import LargeLogo from './assets/ivalo-large.png';
-import Home from './components/Home';
+import LargeLogo from '../assets/ivalo-large.png';
 
 library.add(faSignInAlt, faBarcode);
 
@@ -45,6 +44,7 @@ export default function Home({usuario, logout}: HomeProps) {
       <View style={[styles.subContainer, styles.centerSubContainer]}>
         <Image source={LargeLogo} style={styles.largeLogo} />
         <TouchableOpacity
+          disabled={loadingScan}
           style={styles.buttonScan}
           onPress={() => onBarcodeScan('need to add camera here')}>
           <>
