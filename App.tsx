@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {Keyboard, SafeAreaView, ToastAndroid, StyleSheet} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import {URI} from './config';
 import Login from './components/Login';
 import Footer from './components/Footer';
-import Home from './components/Home';
 import Loading from './components/Loading';
+import Home from './components/Home';
 
 export default function App() {
   const [loadingToken, setLoadingToken] = useState(true);
@@ -48,10 +49,11 @@ export default function App() {
   const login = async (userStore?: string, passwordStore?: string) => {
     setLoadingLogin(true);
     Keyboard.dismiss();
-    const {data} = await axios.post('http://177.71.157.129:4100/client_auth', {
+    const loginData = {
       usuario: userStore || usuario,
       contraseña: passwordStore || contraseña,
-    });
+    };
+    const {data} = await axios.post(`${URI}/client_auth`, loginData);
     const {Errors, Token} = data;
     if (Errors.length > 0) {
       setLoadingLogin(false);
@@ -66,8 +68,8 @@ export default function App() {
       AsyncStorage.multiSet(
         [
           ['TOKEN', Token],
-          ['USERNAME', userStore || usuario],
-          ['PASSWORD', passwordStore || contraseña],
+          ['USERNAME', loginData.usuario],
+          ['PASSWORD', loginData.contraseña],
         ],
         () => {
           setToken(Token);
@@ -91,7 +93,7 @@ export default function App() {
       {loadingToken ? (
         <Loading />
       ) : token && usuario && contraseña ? (
-        <Home logout={() => logout()} usuario={usuario} />
+        <Home logout={() => logout()} usuario={usuario} token={token} />
       ) : (
         <Login
           usuario={usuario}

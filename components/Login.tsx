@@ -11,12 +11,9 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
-import LargeLogo from '../assets/ivalo-large.png';
-
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faBarcode, faSignInAlt} from '@fortawesome/free-solid-svg-icons';
-library.add(faSignInAlt, faBarcode);
+import {faSignInAlt} from '@fortawesome/free-solid-svg-icons';
+import LargeLogo from '../assets/ivalo-large.png';
 
 interface LoginProps {
   loadingLogin: boolean;
