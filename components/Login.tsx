@@ -17,18 +17,18 @@ import LargeLogo from '../assets/ivalo-large.png';
 
 interface LoginProps {
   loadingLogin: boolean;
-  setUsername: (username: string) => void;
-  setPassword: (username: string) => void;
+  onUsernameChange: (username: string) => void;
+  onPasswordChange: (username: string) => void;
   usuario: string;
   contraseña: string;
-  login: () => void;
+  onSubmitLogin: () => void;
 }
 
 export default function Login({
   loadingLogin,
-  setUsername,
-  setPassword,
-  login,
+  onUsernameChange,
+  onPasswordChange,
+  onSubmitLogin,
   usuario,
   contraseña,
 }: LoginProps) {
@@ -46,7 +46,7 @@ export default function Login({
               style={styles.input}
               autoCapitalize="none"
               onChangeText={text => {
-                if (!loadingLogin) setUsername(text);
+                if (!loadingLogin) onUsernameChange(text);
               }}
             />
             <Text style={styles.inputLabel}>Contraseña</Text>
@@ -57,12 +57,12 @@ export default function Login({
               autoCapitalize="none"
               secureTextEntry
               onChangeText={text => {
-                if (!loadingLogin) setPassword(text);
+                if (!loadingLogin) onPasswordChange(text);
               }}
             />
             <TouchableOpacity
               disabled={!usuario || !contraseña || loadingLogin}
-              onPress={() => login()}
+              onPress={() => onSubmitLogin()}
               style={styles.buttonLogin}>
               {loadingLogin ? (
                 <ActivityIndicator color="#007bff" />

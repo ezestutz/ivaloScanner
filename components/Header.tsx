@@ -1,18 +1,28 @@
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
 
-export interface HeaderProps {
+interface HeaderProps {
   usuario: string;
-  logout: () => void;
+  onLogout: () => void;
 }
 
-export default function Header({logout, usuario}: HeaderProps) {
+export default function Header({usuario, onLogout}: HeaderProps) {
   return (
     <View style={styles.header}>
       <Text style={styles.headerText}>¡Hola, {usuario}!</Text>
-      <TouchableOpacity style={styles.logoutButton} onPress={() => logout()}>
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={() =>
+          Alert.alert('Salir', '¿Salir y cerrar sesión?', [
+            {
+              text: 'Cancelar',
+              style: 'cancel',
+            },
+            {text: 'Si, salir', onPress: () => onLogout()},
+          ])
+        }>
         <Text style={styles.headerText}>Salir </Text>
         <FontAwesomeIcon icon={faSignOutAlt} />
       </TouchableOpacity>

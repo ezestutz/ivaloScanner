@@ -1,12 +1,18 @@
 import React from 'react';
-import Header, {HeaderProps} from './Header';
+import Header from './Header';
 import HomeBody from './HomeBody';
 
-export default function Home(props: HeaderProps & {token: string}) {
+interface HomeProps {
+  token: string;
+  usuario: string;
+  onLogout: () => void;
+}
+
+export default function Home({onLogout, token, usuario}: HomeProps) {
   return (
     <>
-      <Header {...props} />
-      <HomeBody token={props.token} />
+      <Header onLogout={() => onLogout()} usuario={usuario} />
+      <HomeBody token={token} />
     </>
   );
 }

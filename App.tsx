@@ -93,15 +93,15 @@ export default function App() {
       {loadingToken ? (
         <Loading />
       ) : token && usuario && contraseña ? (
-        <Home logout={() => logout()} usuario={usuario} token={token} />
+        <Home onLogout={() => logout()} usuario={usuario} token={token} />
       ) : (
         <Login
           usuario={usuario}
           contraseña={contraseña}
-          setUsername={value => setUsername(value)}
-          setPassword={value => setPassword(value)}
+          onUsernameChange={value => setUsername(value)}
+          onPasswordChange={value => setPassword(value)}
           loadingLogin={loadingLogin}
-          login={() => login()}
+          onSubmitLogin={() => login()}
         />
       )}
       <Footer />
