@@ -8,9 +8,9 @@ export default function Footer() {
   const today = new Date();
   return (
     <View style={styles.footer}>
-      <Image source={LargeLogo} style={styles.logo} />
-      <Text style={styles.footerText}>ivalo software</Text>
       <FontAwesomeIcon color="#555555" icon={faCopyright} />
+      <Text style={styles.footerText}>Copyright - {today.getFullYear()}</Text>
+      <Image source={LargeLogo} style={styles.logo} />
     </View>
   );
 }

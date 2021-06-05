@@ -11,15 +11,14 @@ export default function HomeBody({token}: {token: string}) {
     setCameraVisible(true);
   };
 
-  const closeCamera = () => {
-    setLoadingScan(false);
-    setCameraVisible(false);
-  };
-
   return (
     <>
       {cameraVisible ? (
-        <Camera closeCamera={closeCamera} token={token} />
+        <Camera
+          closeCamera={() => setCameraVisible(false)}
+          onDataSent={() => setLoadingScan(false)}
+          token={token}
+        />
       ) : (
         <HomeBodyContent loadingScan={loadingScan} openCamera={openCamera} />
       )}

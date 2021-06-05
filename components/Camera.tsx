@@ -8,10 +8,11 @@ import axios from 'axios';
 
 interface CameraProps {
   closeCamera: () => void;
+  onDataSent: () => void;
   token: string;
 }
 
-export default function Camera({closeCamera, token}: CameraProps) {
+export default function Camera({closeCamera, onDataSent, token}: CameraProps) {
   const headers = {
     headers: {
       'Content-Type': 'application/json',
@@ -20,6 +21,7 @@ export default function Camera({closeCamera, token}: CameraProps) {
   };
 
   const sendBarcode = async (barcode: string) => {
+    closeCamera();
     const {data} = await axios.post(`${URI}/scanner`, {barcode}, headers);
     const {Errors, Product} = data;
     const msj =
@@ -27,7 +29,7 @@ export default function Camera({closeCamera, token}: CameraProps) {
         ? Errors.join('. ')
         : `¡Producto "${Product.nombre}" escaneado!`;
     ToastAndroid.showWithGravity(msj, ToastAndroid.LONG, ToastAndroid.CENTER);
-    closeCamera();
+    onDataSent();
   };
 
   return (
