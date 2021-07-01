@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Keyboard,
   Text,
@@ -14,6 +14,7 @@ import {
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSignInAlt} from '@fortawesome/free-solid-svg-icons';
 import LargeLogo from '../assets/ivalo-large.png';
+import Footer from './Footer';
 
 interface LoginProps {
   loadingLogin: boolean;
@@ -32,18 +33,51 @@ export default function Login({
   usuario,
   contraseña,
 }: LoginProps) {
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => setKeyboardVisible(true),
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => setKeyboardVisible(false),
+    );
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
   return (
-    <KeyboardAvoidingView behavior="padding">
+    <KeyboardAvoidingView behavior="height">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.subContainer}>
-          <Image source={LargeLogo} style={[styles.largeLogo]} />
-          <View style={styles.loginContainer}>
-            <Text style={styles.title}>Iniciar sesión</Text>
+          <View
+            style={[
+              styles.loginContainer,
+              {
+                top: isKeyboardVisible ? '2%' : '15%',
+                paddingVertical: isKeyboardVisible ? 20 : 35,
+              },
+            ]}>
+            <Image
+              source={LargeLogo}
+              style={[
+                styles.largeLogo,
+                {
+                  width: isKeyboardVisible ? 139.40625 : 185.875,
+                  height: isKeyboardVisible ? 50.8125 : 67.75,
+                },
+              ]}
+            />
             <Text style={styles.inputLabel}>Usuario</Text>
             <TextInput
               placeholderTextColor="#000000"
               selectionColor="#000000"
               style={styles.input}
+              maxLength={255}
+              autoCorrect={false}
+              textContentType="username"
               autoCapitalize="none"
               onChangeText={text => {
                 if (!loadingLogin) onUsernameChange(text);
@@ -56,6 +90,7 @@ export default function Login({
               style={styles.input}
               autoCapitalize="none"
               secureTextEntry
+              textContentType="password"
               onChangeText={text => {
                 if (!loadingLogin) onPasswordChange(text);
               }}
@@ -74,6 +109,7 @@ export default function Login({
               )}
             </TouchableOpacity>
           </View>
+          {!isKeyboardVisible && <Footer />}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
@@ -82,16 +118,16 @@ export default function Login({
 const styles = StyleSheet.create({
   subContainer: {
     alignItems: 'center',
+    height: '100%',
   },
   largeLogo: {
-    width: 240,
-    height: 126.375,
-    marginVertical: 40,
+    alignSelf: 'center',
   },
   loginContainer: {
-    padding: 35,
+    position: 'absolute',
+    paddingHorizontal: 35,
     width: '90%',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fefefe',
     borderRadius: 10,
     borderColor: '#ced4da',
     borderWidth: 1,

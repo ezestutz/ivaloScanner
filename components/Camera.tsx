@@ -14,10 +14,7 @@ interface CameraProps {
 
 export default function Camera({closeCamera, onDataSent, token}: CameraProps) {
   const headers = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: token,
-    },
+    headers: {'Content-Type': 'application/json', Authorization: token},
   };
 
   const sendBarcode = async (barcode: string) => {

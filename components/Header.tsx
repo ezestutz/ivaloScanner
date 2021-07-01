@@ -23,7 +23,7 @@ export default function Header({usuario, onLogout}: HeaderProps) {
             {text: 'Si, salir', onPress: () => onLogout()},
           ])
         }>
-        <Text style={styles.headerText}>Salir </Text>
+        <Text style={styles.headerText}>Cerrar Sesión </Text>
         <FontAwesomeIcon icon={faSignOutAlt} />
       </TouchableOpacity>
     </View>

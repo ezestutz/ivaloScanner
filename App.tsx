@@ -4,7 +4,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import {URI} from './config';
 import Login from './components/Login';
-import Footer from './components/Footer';
 import Loading from './components/Loading';
 import Home from './components/Home';
 
@@ -92,19 +91,18 @@ export default function App() {
     <SafeAreaView style={styles.container}>
       {loadingToken ? (
         <Loading />
-      ) : token && usuario && contraseña ? (
-        <Home onLogout={() => logout()} usuario={usuario} token={token} />
+      ) : token ? (
+        <Home onLogout={logout} usuario={usuario} token={token} />
       ) : (
         <Login
           usuario={usuario}
           contraseña={contraseña}
-          onUsernameChange={value => setUsername(value)}
-          onPasswordChange={value => setPassword(value)}
+          onUsernameChange={setUsername}
+          onPasswordChange={setPassword}
           loadingLogin={loadingLogin}
           onSubmitLogin={() => login()}
         />
       )}
-      <Footer />
     </SafeAreaView>
   );
 }

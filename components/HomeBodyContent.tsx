@@ -75,8 +75,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   largeLogo: {
-    width: 240,
-    height: 126.375,
+    width: 232.34375,
+    height: 84.6875,
     marginVertical: 40,
   },
 });
