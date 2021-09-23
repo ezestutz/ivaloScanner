@@ -11,7 +11,7 @@ export default function App() {
   const [loadingToken, setLoadingToken] = useState(true);
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [token, setToken] = useState('');
-  const [usuario, setUsername] = useState('');
+  const [name, setUsername] = useState('');
   const [contraseña, setPassword] = useState('');
 
   useEffect(() => {
@@ -49,8 +49,8 @@ export default function App() {
     setLoadingLogin(true);
     Keyboard.dismiss();
     const loginData = {
-      usuario: userStore || usuario,
-      contraseña: passwordStore || contraseña,
+      name: userStore || name,
+      password: passwordStore || contraseña,
     };
     const {data} = await axios.post(`${URI}/client_auth`, loginData);
     const {Errors, Token} = data;
@@ -67,8 +67,8 @@ export default function App() {
       AsyncStorage.multiSet(
         [
           ['TOKEN', Token],
-          ['USERNAME', loginData.usuario],
-          ['PASSWORD', loginData.contraseña],
+          ['USERNAME', loginData.name],
+          ['PASSWORD', loginData.password],
         ],
         () => {
           setToken(Token);
@@ -92,10 +92,10 @@ export default function App() {
       {loadingToken ? (
         <Loading />
       ) : token ? (
-        <Home onLogout={logout} usuario={usuario} token={token} />
+        <Home onLogout={logout} usuario={name} token={token} />
       ) : (
         <Login
-          usuario={usuario}
+          usuario={name}
           contraseña={contraseña}
           onUsernameChange={setUsername}
           onPasswordChange={setPassword}

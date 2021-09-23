@@ -24,7 +24,7 @@ export default function Camera({closeCamera, onDataSent, token}: CameraProps) {
     const msj =
       Errors.length > 0
         ? Errors.join('. ')
-        : `¡Producto "${Product.nombre}" escaneado!`;
+        : `¡Producto "${Product.name}" escaneado!`;
     ToastAndroid.showWithGravity(msj, ToastAndroid.LONG, ToastAndroid.CENTER);
     onDataSent();
   };
