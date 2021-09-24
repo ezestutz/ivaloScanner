@@ -20,11 +20,9 @@ export default function Camera({closeCamera, onDataSent, token}: CameraProps) {
   const sendBarcode = async (barcode: string) => {
     closeCamera();
     const {data} = await axios.post(`${URI}/scanner`, {barcode}, headers);
-    const {Errors, Product} = data;
-    const msj =
-      Errors.length > 0
-        ? Errors.join('. ')
-        : `¡Producto "${Product.name}" escaneado!`;
+    const msj = data.Errors?.length
+      ? data.Errors.join('. ')
+      : `${data.Product?.name || 'Producto'} escaneado!`;
     ToastAndroid.showWithGravity(msj, ToastAndroid.LONG, ToastAndroid.CENTER);
     onDataSent();
   };
