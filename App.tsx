@@ -52,7 +52,7 @@ export default function App() {
       name: userStore || name,
       password: passwordStore || contraseña,
     };
-    const {data} = await axios.post(`${URI}/client_auth`, loginData);
+    const {data} = await axios.post(`${URI}/user_auth`, loginData);
     const {Errors, Token} = data;
     if (Errors.length > 0) {
       setLoadingLogin(false);
