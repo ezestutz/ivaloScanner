@@ -10,10 +10,12 @@ import {
   ActivityIndicator,
   Image,
   StyleSheet,
+  Appearance,
 } from 'react-native';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSignInAlt} from '@fortawesome/free-solid-svg-icons';
 import LargeLogo from '../assets/ivalo-large.png';
+import LargeLogoWhite from '../assets/ivalo-large-white.png';
 import Footer from './Footer';
 
 interface LoginProps {
@@ -33,6 +35,7 @@ export default function Login({
   usuario,
   contraseña,
 }: LoginProps) {
+  const colorScheme = Appearance.getColorScheme();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -61,7 +64,7 @@ export default function Login({
               },
             ]}>
             <Image
-              source={LargeLogo}
+              source={colorScheme === 'dark' ? LargeLogoWhite : LargeLogo}
               style={[
                 styles.largeLogo,
                 {

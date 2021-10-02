@@ -8,8 +8,10 @@ import {
   View,
   Image,
   Text,
+  Appearance,
 } from 'react-native';
 import LargeLogo from '../assets/ivalo-large.png';
+import LargeLogoWhite from '../assets/ivalo-large-white.png';
 
 interface HomeBodyContentProps {
   loadingScan: boolean;
@@ -20,9 +22,13 @@ export default function HomeBodyContent({
   loadingScan,
   openCamera,
 }: HomeBodyContentProps) {
+  const colorScheme = Appearance.getColorScheme();
   return (
     <View style={[styles.subContainer, styles.centerSubContainer]}>
-      <Image source={LargeLogo} style={styles.largeLogo} />
+      <Image
+        source={colorScheme === 'dark' ? LargeLogoWhite : LargeLogo}
+        style={styles.largeLogo}
+      />
       <TouchableOpacity
         disabled={loadingScan}
         style={styles.buttonScan}
