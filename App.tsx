@@ -53,7 +53,7 @@ export default function App() {
       password: passwordStore || contraseña,
     };
     const {data} = await axios.post(`${URI}/user_auth`, loginData);
-    const {Errors, Token} = data;
+    const {Errors} = data;
     if (Errors.length > 0) {
       setLoadingLogin(false);
       setLoadingToken(false);
@@ -64,6 +64,7 @@ export default function App() {
       );
       logout();
     } else {
+      const {Token} = data;
       AsyncStorage.multiSet(
         [
           ['TOKEN', Token],
