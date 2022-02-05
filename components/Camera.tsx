@@ -45,7 +45,9 @@ export default function Camera({closeCamera, onDataSent, token}: CameraProps) {
           buttonNegative: 'Cancelar',
         }}
         captureAudio={false}
-        onBarCodeRead={(e: BarCodeReadEvent) => sendBarcode(e.data)}
+        onBarCodeRead={(e: BarCodeReadEvent) =>
+          sendBarcode(e.data.replace(/\s+/g, ''))
+        }
       />
     </View>
   );
