@@ -20,20 +20,20 @@ import Footer from './Footer';
 
 interface LoginProps {
   loadingLogin: boolean;
-  onUsernameChange: (username: string) => void;
-  onPasswordChange: (username: string) => void;
-  usuario: string;
-  contraseña: string;
+  onEmailChange: (email: string) => void;
+  onPasswordChange: (password: string) => void;
+  email: string;
+  password: string;
   onSubmitLogin: () => void;
 }
 
 export default function Login({
   loadingLogin,
-  onUsernameChange,
+  onEmailChange,
   onPasswordChange,
   onSubmitLogin,
-  usuario,
-  contraseña,
+  email,
+  password,
 }: LoginProps) {
   const colorScheme = Appearance.getColorScheme();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -73,17 +73,17 @@ export default function Login({
                 },
               ]}
             />
-            <Text style={styles.inputLabel}>Usuario</Text>
+            <Text style={styles.inputLabel}>Email</Text>
             <TextInput
               placeholderTextColor="#000000"
               selectionColor="#000000"
               style={styles.input}
               maxLength={255}
               autoCorrect={false}
-              textContentType="username"
+              textContentType="emailAddress"
               autoCapitalize="none"
               onChangeText={text => {
-                if (!loadingLogin) onUsernameChange(text);
+                if (!loadingLogin) onEmailChange(text);
               }}
             />
             <Text style={styles.inputLabel}>Contraseña</Text>
@@ -99,7 +99,7 @@ export default function Login({
               }}
             />
             <TouchableOpacity
-              disabled={!usuario || !contraseña || loadingLogin}
+              disabled={!email || !password || loadingLogin}
               onPress={() => onSubmitLogin()}
               style={styles.buttonLogin}>
               {loadingLogin ? (

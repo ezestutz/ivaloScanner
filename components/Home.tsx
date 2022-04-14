@@ -5,14 +5,14 @@ import Footer from './Footer';
 
 interface HomeProps {
   token: string;
-  usuario: string;
+  user: string;
   onLogout: () => void;
 }
 
-export default function Home({onLogout, token, usuario}: HomeProps) {
+export default function Home({onLogout, token, user}: HomeProps) {
   return (
     <>
-      <Header onLogout={() => onLogout()} usuario={usuario} />
+      <Header onLogout={() => onLogout()} user={user} />
       <HomeBody token={token} />
       <Footer />
     </>

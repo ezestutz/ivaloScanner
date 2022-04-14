@@ -11,25 +11,28 @@ export default function App() {
   const [loadingToken, setLoadingToken] = useState(true);
   const [loadingLogin, setLoadingLogin] = useState(false);
   const [token, setToken] = useState('');
-  const [name, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [user, setUser] = useState('');
   const [contraseña, setPassword] = useState('');
 
   useEffect(() => {
     async function getSetToken() {
       AsyncStorage.multiGet(
-        ['TOKEN', 'USERNAME', 'PASSWORD'],
+        ['TOKEN', 'USER', 'EMAIL', 'PASSWORD'],
         (error, result) => {
           if (
             !error &&
             result &&
             result[0][1] &&
             result[1][1] &&
-            result[2][1]
+            result[2][1] &&
+            result[3][1]
           ) {
             setToken(result[0][1]);
-            setUsername(result[1][1]);
-            setPassword(result[2][1]);
-            login(result[1][1], result[2][1]);
+            setUser(result[1][1]);
+            setEmail(result[2][1]);
+            setPassword(result[3][1]);
+            login(result[2][1], result[3][1]);
           } else {
             if (token)
               ToastAndroid.showWithGravity(
@@ -45,11 +48,11 @@ export default function App() {
     getSetToken();
   }, []);
 
-  const login = async (userStore?: string, passwordStore?: string) => {
+  const login = async (emailStore?: string, passwordStore?: string) => {
     setLoadingLogin(true);
     Keyboard.dismiss();
     const loginData = {
-      name: userStore || name,
+      email: emailStore || email,
       password: passwordStore || contraseña,
     };
     const {data} = await axios.post(`${URI}/user_auth`, loginData);
@@ -68,11 +71,13 @@ export default function App() {
       AsyncStorage.multiSet(
         [
           ['TOKEN', Token],
-          ['USERNAME', loginData.name],
+          ['USER', data?.User?.name],
+          ['EMAIL', loginData.email],
           ['PASSWORD', loginData.password],
         ],
         () => {
           setToken(Token);
+          setUser(data?.User?.name);
           setLoadingLogin(false);
           setLoadingToken(false);
         },
@@ -82,8 +87,10 @@ export default function App() {
 
   const logout = () => {
     setLoadingToken(true);
-    AsyncStorage.multiRemove(['TOKEN', 'USERNAME', 'PASSWORD'], () => {
+    AsyncStorage.multiRemove(['TOKEN', 'USER', 'EMAIL', 'PASSWORD'], () => {
       setToken('');
+      setUser('');
+      setPassword('');
       setLoadingToken(false);
     });
   };
@@ -93,12 +100,12 @@ export default function App() {
       {loadingToken ? (
         <Loading />
       ) : token ? (
-        <Home onLogout={logout} usuario={name} token={token} />
+        <Home onLogout={logout} user={email} token={token} />
       ) : (
         <Login
-          usuario={name}
-          contraseña={contraseña}
-          onUsernameChange={setUsername}
+          email={email}
+          password={contraseña}
+          onEmailChange={setEmail}
           onPasswordChange={setPassword}
           loadingLogin={loadingLogin}
           onSubmitLogin={() => login()}

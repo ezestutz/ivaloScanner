@@ -4,14 +4,14 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSignOutAlt} from '@fortawesome/free-solid-svg-icons';
 
 interface HeaderProps {
-  usuario: string;
+  user: string;
   onLogout: () => void;
 }
 
-export default function Header({usuario, onLogout}: HeaderProps) {
+export default function Header({user, onLogout}: HeaderProps) {
   return (
     <View style={styles.header}>
-      <Text style={styles.headerText}>¡Hola, {usuario}!</Text>
+      <Text style={styles.headerText}>¡Hola, {user}!</Text>
       <TouchableOpacity
         style={styles.logoutButton}
         onPress={() =>
