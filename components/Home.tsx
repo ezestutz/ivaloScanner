@@ -12,8 +12,8 @@ interface HomeProps {
 export default function Home({onLogout, token, user}: HomeProps) {
   return (
     <>
-      <Header onLogout={() => onLogout()} user={user} />
-      <HomeBody token={token} />
+      <Header onLogout={onLogout} user={user} />
+      <HomeBody onLogout={onLogout} token={token} />
       <Footer />
     </>
   );

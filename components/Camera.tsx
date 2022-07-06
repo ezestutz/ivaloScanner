@@ -6,25 +6,43 @@ import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import {URI} from '../config';
 import axios from 'axios';
 
+interface ScanResponse {
+  data: {Errors: string[]; Product: {name: string}};
+  status: number;
+}
+
 interface CameraProps {
   closeCamera: () => void;
   onDataSent: () => void;
   token: string;
+  onLogout: () => void;
 }
 
-export default function Camera({closeCamera, onDataSent, token}: CameraProps) {
+export default function Camera({
+  closeCamera,
+  onDataSent,
+  token,
+  onLogout,
+}: CameraProps) {
   const headers = {
     headers: {'Content-Type': 'application/json', Authorization: token},
   };
 
   const sendBarcode = async (barcode: string) => {
     closeCamera();
-    const {data} = await axios.post(`${URI}/scanner`, {barcode}, headers);
-    const msj = data.Errors?.length
-      ? data.Errors.join('. ')
-      : `${data.Product?.name || 'Producto'} escaneado!`;
-    ToastAndroid.showWithGravity(msj, ToastAndroid.LONG, ToastAndroid.CENTER);
-    onDataSent();
+    const {data, status}: ScanResponse = await axios.post(
+      `${URI}/scanner`,
+      {barcode},
+      headers,
+    );
+    if (status === 401) onLogout();
+    else {
+      const msj = data.Errors?.length
+        ? data.Errors.join('. ')
+        : `${data.Product?.name || 'Producto'} escaneado!`;
+      ToastAndroid.showWithGravity(msj, ToastAndroid.LONG, ToastAndroid.CENTER);
+      onDataSent();
+    }
   };
 
   return (

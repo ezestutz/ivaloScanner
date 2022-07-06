@@ -20,7 +20,7 @@ export default function Header({user, onLogout}: HeaderProps) {
               text: 'Cancelar',
               style: 'cancel',
             },
-            {text: 'Si, salir', onPress: () => onLogout()},
+            {text: 'Si, salir', onPress: onLogout},
           ])
         }>
         <Text style={styles.headerText}>Cerrar Sesión </Text>
