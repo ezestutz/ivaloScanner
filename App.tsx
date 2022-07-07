@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
-import {SafeAreaView, ToastAndroid, StyleSheet} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, {useCallback, useEffect, useState} from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import Login from './components/Login';
 import Loading from './components/Loading';
 import Home from './components/Home';
@@ -10,41 +10,36 @@ export default function App() {
   const [token, setToken] = useState('');
   const [user, setUser] = useState('');
 
-  const login = (newToken: string, newUser: string) => {
+  const login = useCallback((newToken: string, newUser: string) => {
     setToken(newToken);
     setUser(newUser);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = async () => {
     setLoadingToken(true);
     login('', '');
-    AsyncStorage.multiRemove(['TOKEN', 'USER'], () => {
-      setLoadingToken(false);
-    });
+    await EncryptedStorage.clear();
+    setLoadingToken(false);
   };
 
   useEffect(() => {
     const autoLogin = async () => {
       setLoadingToken(true);
-      AsyncStorage.multiGet(['TOKEN', 'USER'], (error, result) => {
-        if (!error && result && result[0][1] && result[1][1]) {
-          login(result[0][1], result[1][1]);
-        }
-        setLoadingToken(false);
-      });
+      const oldToken = await EncryptedStorage.getItem('TOKEN');
+      const oldUserName = await EncryptedStorage.getItem('USER');
+      if (oldToken && oldUserName) login(oldToken, oldUserName);
+      setLoadingToken(false);
     };
     autoLogin();
   }, [login]);
 
   return (
     <SafeAreaView style={styles.container}>
-      {loadingToken ? (
-        <Loading />
-      ) : token ? (
+      {loadingToken && <Loading />}
+      {!loadingToken && !!token && (
         <Home onLogout={logout} user={user} token={token} />
-      ) : (
-        <Login onLogin={login} />
       )}
+      {!loadingToken && !token && <Login onLogin={login} />}
     </SafeAreaView>
   );
 }
@@ -52,6 +47,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#f5f5f5',
   },
 });

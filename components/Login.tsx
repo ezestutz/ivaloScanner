@@ -17,7 +17,7 @@ import axios from 'axios';
 import ModalSelector from 'react-native-modal-selector';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSignInAlt} from '@fortawesome/free-solid-svg-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import {URI} from '../config';
 import Footer from './Footer';
 import LargeLogo from '../assets/ivalo-large.png';
@@ -52,18 +52,12 @@ export default function Login({onLogin}: LoginProps) {
 
   const colorScheme = Appearance.getColorScheme();
 
-  const userLogin = (newToken: string, newUser: string) => {
+  const userLogin = async (newToken: string, newUser: string) => {
     setLoadingLogin(true);
-    AsyncStorage.multiSet(
-      [
-        ['TOKEN', newToken],
-        ['USER', newUser],
-      ],
-      () => {
-        setLoadingLogin(false);
-        onLogin(newToken, newUser);
-      },
-    );
+    await EncryptedStorage.setItem('TOKEN', newToken);
+    await EncryptedStorage.setItem('USER', newUser);
+    setLoadingLogin(false);
+    onLogin(newToken, newUser);
   };
 
   const businessLogin = async () => {
@@ -84,7 +78,7 @@ export default function Login({onLogin}: LoginProps) {
     } else {
       setLoadingLogin(false);
       ToastAndroid.showWithGravity(
-        data.Errors.join(' '),
+        (data?.Errors || ['Error al iniciar sesión.']).join(' '),
         ToastAndroid.LONG,
         ToastAndroid.CENTER,
       );
@@ -183,13 +177,19 @@ export default function Login({onLogin}: LoginProps) {
               <TouchableOpacity
                 disabled={!email || !password || loadingLogin}
                 onPress={businessLogin}
-                style={styles.buttonLogin}>
+                style={[
+                  styles.buttonLogin,
+                  styles.buttonSuccess,
+                  {marginTop: 50},
+                ]}>
                 {loadingLogin ? (
-                  <ActivityIndicator color="#007bff" />
+                  <ActivityIndicator color="#198754" />
                 ) : (
                   <>
-                    <Text style={styles.buttonText}>Ingresar</Text>
-                    <FontAwesomeIcon color="#007bff" icon={faSignInAlt} />
+                    <Text style={[styles.buttonText, styles.textSuccess]}>
+                      Ingresar
+                    </Text>
+                    <FontAwesomeIcon color="#198754" icon={faSignInAlt} />
                   </>
                 )}
               </TouchableOpacity>
@@ -204,21 +204,58 @@ export default function Login({onLogin}: LoginProps) {
                   paddingVertical: isKeyboardVisible ? 20 : 35,
                 },
               ]}>
-              <Text style={styles.inputLabel}>Continuar como:</Text>
               <TouchableOpacity
                 disabled={loadingLogin}
                 onPress={() => selectUser(usersToSelect[0].id)}
-                style={styles.buttonLogin}>
-                <Text style={styles.buttonText}>{usersToSelect[0].name}</Text>
+                style={[
+                  styles.buttonLogin,
+                  styles.buttonSuccess,
+                  {marginBottom: 25},
+                ]}>
+                <Text style={[styles.buttonText, styles.textSuccess]}>
+                  Continuar como: {usersToSelect[0].name}
+                </Text>
               </TouchableOpacity>
-              <ModalSelector
-                data={usersToSelect.slice(1)}
-                keyExtractor={u => u.id}
-                labelExtractor={u => u.name}
-                onChange={u => selectUser(u.id)}
-                initValue="Elegir usuario"
-                disabled={loadingLogin}
-              />
+              {usersToSelect.length === 1 ? (
+                <TouchableOpacity
+                  disabled={loadingLogin}
+                  onPress={() => selectUser(usersToSelect[1].id)}
+                  style={[styles.buttonLogin, styles.buttonPrimary]}>
+                  <Text style={[styles.buttonText, styles.textPrimary]}>
+                    Continuar como: {usersToSelect[1].name}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <ModalSelector
+                  contentContainerStyle={styles.selectLogin}
+                  childrenContainerStyle={{borderWidth: 0}}
+                  selectStyle={{
+                    ...styles.buttonLogin,
+                    ...styles.buttonPrimary,
+                  }}
+                  initValueTextStyle={{
+                    ...styles.buttonText,
+                    ...styles.textPrimary,
+                  }}
+                  initValue="Elegir otro usuario"
+                  header={<Text style={styles.title}>Elegir Usuario:</Text>}
+                  cancelStyle={styles.buttonLogin}
+                  cancelTextStyle={styles.buttonText}
+                  cancelText="Cancelar"
+                  data={usersToSelect.slice(1)}
+                  keyExtractor={u => u.id}
+                  labelExtractor={u => u.name}
+                  componentExtractor={u => (
+                    <View style={[styles.buttonLogin, styles.buttonPrimary]}>
+                      <Text style={[styles.buttonText, styles.textPrimary]}>
+                        {u.name}
+                      </Text>
+                    </View>
+                  )}
+                  onChange={u => selectUser(u.id)}
+                  disabled={loadingLogin}
+                />
+              )}
             </View>
           )}
           {!isKeyboardVisible && <Footer />}
@@ -269,15 +306,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 5,
-    borderColor: '#007bff',
     borderWidth: 1,
-    marginTop: 25,
-    height: 40,
+    height: 50,
     paddingHorizontal: 70,
+  },
+  buttonSuccess: {
+    borderColor: '#198754',
+  },
+  buttonPrimary: {
+    borderColor: '#0d6efd',
+  },
+  selectLogin: {
+    marginTop: 20,
   },
   buttonText: {
     fontSize: 18,
-    color: '#007bff',
     paddingRight: 10,
+    borderWidth: 0,
+  },
+  textPrimary: {
+    color: '#0d6efd',
+  },
+  textSuccess: {
+    color: '#198754',
   },
 });

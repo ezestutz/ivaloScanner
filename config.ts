@@ -1,1 +1,1 @@
-export const URI = 'http://177.71.157.129:4100';
+export const URI = 'https://www.ivalo.com.ar:4100';
