@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   closeCamera: {
     position: 'absolute',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#2baabe',
     top: '3%',
     left: '3%',
     borderWidth: 1,
