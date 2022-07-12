@@ -16,7 +16,11 @@ import {
 import axios from 'axios';
 import ModalSelector from 'react-native-modal-selector';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import {faSignInAlt} from '@fortawesome/free-solid-svg-icons';
+import {
+  faSignInAlt,
+  faUser,
+  faUserTie,
+} from '@fortawesome/free-solid-svg-icons';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {URI} from '../config';
 import Footer from './Footer';
@@ -141,6 +145,7 @@ export default function Login({onLogin}: LoginProps) {
               ]}>
               <Image
                 source={colorScheme === 'dark' ? LargeLogoWhite : LargeLogo}
+                resizeMode="center"
                 style={[
                   styles.largeLogo,
                   {
@@ -215,6 +220,7 @@ export default function Login({onLogin}: LoginProps) {
                 <Text style={[styles.buttonText, styles.textSuccess]}>
                   Continuar como: {usersToSelect[0].name}
                 </Text>
+                <FontAwesomeIcon color="#198754" icon={faUserTie} />
               </TouchableOpacity>
               {usersToSelect.length === 1 ? (
                 <TouchableOpacity
@@ -224,6 +230,7 @@ export default function Login({onLogin}: LoginProps) {
                   <Text style={[styles.buttonText, styles.textPrimary]}>
                     Continuar como: {usersToSelect[1].name}
                   </Text>
+                  <FontAwesomeIcon color="#0d6efd" icon={faUser} />
                 </TouchableOpacity>
               ) : (
                 <ModalSelector
@@ -250,6 +257,7 @@ export default function Login({onLogin}: LoginProps) {
                       <Text style={[styles.buttonText, styles.textPrimary]}>
                         {u.name}
                       </Text>
+                      <FontAwesomeIcon color="#0d6efd" icon={faUser} />
                     </View>
                   )}
                   onChange={u => selectUser(u.id)}
@@ -308,7 +316,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     borderWidth: 1,
     height: 50,
-    paddingHorizontal: 70,
   },
   buttonSuccess: {
     borderColor: '#198754',

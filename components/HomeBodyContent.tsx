@@ -32,7 +32,7 @@ export default function HomeBodyContent({
       <TouchableOpacity
         disabled={loadingScan}
         style={styles.buttonScan}
-        onPress={() => openCamera()}>
+        onPress={openCamera}>
         <>
           {loadingScan ? (
             <ActivityIndicator
