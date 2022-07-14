@@ -13,7 +13,6 @@
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-native-fontawesome": "^0.3.0",
     "axios": "^0.27.2",
-    "dynamsoft-capture-vision-react-native": "^1.1.1",
     "react": "18.0.0",
     "react-native": "0.69.1",
     "react-native-encrypted-storage": "^4.0.2",
